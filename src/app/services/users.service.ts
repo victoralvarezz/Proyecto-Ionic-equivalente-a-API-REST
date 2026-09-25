@@ -1,36 +1,30 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { UsersService } from '../../services/users.service';
-import { User } from '../../models/user.model';
+import { Injectable } from '@angular/core';
+import { User } from '../models/user.model';
 
-@Component({
-  selector: 'app-users',
-  templateUrl: './users.page.html',
-  styleUrls: ['./users.page.scss'],
-  standalone: false
+@Injectable({
+  providedIn: 'root'
 })
-export class UsersPage implements OnInit {
+export class UsersService {
 
-  users: User[] = [];
-  loading = false;
+  private users: User[] = [
+    { id: 1, name: 'Ana', email: 'ana@test.com', active: true },
+    { id: 2, name: 'Luis', email: 'luis@test.com', active: false },
+    { id: 3, name: 'Carlos', email: 'carlos@test.com', active: true }
+  ];
 
-  constructor(
-    private usersService: UsersService,
-    private cdr: ChangeDetectorRef
-  ) {}
-
-  async ngOnInit() {
-    await this.loadUsers();
+  async getUsers(): Promise<User[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(this.users), 500);
+    });
   }
 
-  async loadUsers() {
-    try {
-      this.loading = true;
-      this.users = await this.usersService.getActiveUsers();
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      this.loading = false;
-      this.cdr.detectChanges();
-    }
+  async getActiveUsers(): Promise<User[]> {
+    const users = await this.getUsers();
+    return users.filter(u => u.active);
+  }
+
+  async getUserById(id: number): Promise<User | undefined> {
+    const users = await this.getUsers();
+    return users.find(u => u.id === id);
   }
 }
