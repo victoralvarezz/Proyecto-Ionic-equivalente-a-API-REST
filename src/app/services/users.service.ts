@@ -13,18 +13,20 @@ export class UsersService {
   ];
 
   async getUsers(): Promise<User[]> {
-    return new Promise(resolve => {
-      setTimeout(() => resolve(this.users), 500);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.users);
+      }, 500);
     });
   }
 
   async getActiveUsers(): Promise<User[]> {
     const users = await this.getUsers();
-    return users.filter(u => u.active);
+    return users.filter((u) => u.active);
   }
 
   async getUserById(id: number): Promise<User | undefined> {
     const users = await this.getUsers();
-    return users.find(u => u.id === id);
+    return users.find((u) => u.id === id);
   }
 }
